@@ -4491,7 +4491,7 @@ class MainWindow:
         self.root.rowconfigure(0, weight=0)  # 标题栏固定
         self.root.rowconfigure(1, weight=0)  # 顶部 task_progress 固定
         self.root.rowconfigure(2, weight=3)  # Notebook 主交互区
-        self.root.rowconfigure(3, weight=1)  # 底部 log_panel
+        self.root.rowconfigure(3, weight=0)  # 底部 log_panel(固定高度,不伸缩)
         self.root.rowconfigure(4, weight=0)  # 状态栏固定(task-fix-grid-pack-mix)
 
         make_styled_styles()
@@ -4569,7 +4569,7 @@ class MainWindow:
         self.log_text = scrolledtext.ScrolledText(
             text_frame, bg=CURRENT_THEME.LOG_BG, fg=CURRENT_THEME.LOG_FG,
             font=("Consolas", 9), relief="flat", bd=0,
-            insertbackground=CURRENT_THEME.LOG_FG, height=22, wrap=tk.WORD,
+            insertbackground=CURRENT_THEME.LOG_FG, height=11, wrap=tk.WORD,
             highlightthickness=0
         )
         self.log_text.pack(fill=tk.BOTH, expand=True, padx=1, pady=1)
