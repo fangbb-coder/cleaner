@@ -1,126 +1,108 @@
-# C 盘垃圾清理工具
+# 绿色垃圾文件清理器
 
-Win11 上针对 C 盘的小工具,单文件 exe,双击即用,自带 UAC 提权。
+Windows 下的 C 盘深度清理工具，单文件 exe，双击即用，自动申请管理员权限。
 
-## 快速使用(推荐)
+## 快速开始
 
-**直接双击 →** `dist\C_Cleaner.exe`
+**直接双击 `dist\C_Cleaner.exe`**
 
-- 自动弹出 UAC 窗口请求管理员权限(点"是")
-- 不用装 Python,12 MB,任何 Win11 机器都能跑
-- 可以把这个 exe 复制到任何位置运行,或发给同事
+- 自动弹出 UAC 窗口请求管理员权限（点"是"）
+- 无需安装 Python，约 13 MB，任意 Win10/11 机器都能跑
+- 可复制到任意位置运行，也可直接发给他人使用
 
-## 重新打包(改了代码后)
+## 核心功能
 
-双击 `打包.bat`,会自动:
-1. 检查/安装 PyInstaller
-2. 把项目临时复制到 `%TEMP%` 下一份(纯英文路径,绕开 PyInstaller 不支持中文路径的 bug)
-3. 在临时目录里打包
-4. 把 `C_Cleaner.exe` 复制回当前 `dist\` 目录
-5. 自动打开资源管理器定位 exe
+### 75 项清理目标，分三档
 
-## 不用 exe,用 Python 跑(开发调试用)
+| 档位 | 数量 | 默认勾选 | 说明 |
+|---|---|---|---|
+| 🟢 安全 | 40 | ✓ | 删除不影响系统功能，放心清理 |
+| 🟡 谨慎 | 26 | ✗ | 可能影响部分软件体验，按需选择 |
+| 🔴 高级 | 9 | ✗ | 系统级操作，不可逆，需二次确认 |
 
-双击 `运行.bat`:
-- 自动用 PowerShell 提权启动 `python cleaner.py`
-- 需要先装 Python 3.8+(勾选 "Add to PATH")
+**覆盖范围：**
 
-## 功能特性(v3.2.0 - 性能/能力全面升级)
+- **系统垃圾**：临时文件、缩略图缓存、图标缓存、错误报告、崩溃转储、Windows 更新残留、内核转储、Defender 扫描历史
+- **浏览器缓存**：Edge、Chrome、Firefox、Brave、Opera、Vivaldi、Yandex（含 IndexedDB / ServiceWorker 深度缓存）
+- **软件缓存**：VSCode、Spotify、Slack、Discord、Zoom、Steam、Teams、Skype、Epic、EA、Battle.net、Ubisoft
+- **开发工具缓存**：pip、npm、yarn、pnpm、cargo、gradle、Maven、NuGet、JetBrains、Chocolatey、winget
+- **野生临时文件**：在临时目录下扫描散落的 `*.tmp` / `*.log` / `*.bak` / `*.old`，仅清理超期或超大文件
+- **高级释放**：关闭休眠（释放 hiberfil.sys，可达 4-16 GB）、清理旧卷影副本、删除 `Windows.old` 等
 
-### 74 个清理项,分三档(v3.1 的 51 → v3.2 的 74,**+45%**)
+### 四大功能模块
 
-- **安全**(默认勾选,39 项):
-  - **用户/系统临时**:用户临时、系统临时、缩略图、DirectX 着色器、错误报告、诊断、通知、图标缓存、快捷方式、用户级崩溃转储
-  - **浏览器缓存**:Edge、Chrome、Firefox、Brave、Opera、Opera GX、Vivaldi、Yandex(含 IndexedDB/ServiceWorker 深度缓存)
-  - **通信**:VSCode、Spotify、Slack、Discord、Zoom、Steam、**Skype**、**Microsoft Teams**
-  - **游戏启动器**:**Epic Games**、**EA App / Origin**、**Battle.net**、**Ubisoft Connect**
-  - **IDE**:**Notepad++** 备份、**Sublime Text**、**Eclipse**
-  - **包管理**:NuGet、Chocolatey、winget
-  - **系统**:Windows Media Player、Microsoft Store 缓存
-- **谨慎**(默认不勾,26 项):
-  - **系统**:Windows 更新下载、Prefetch、Installer 补丁缓存、内核转储、Defender 扫描历史、旧升级下载、Win11 系统应用缓存、Office/Outlook 缓存、OneDrive 日志、Adobe 缓存
-  - **包管理**:pip、uv、npm、yarn、pnpm、cargo、gradle、JetBrains、**Maven**、**Composer**、**Bundler**、**sbt**
-  - **野生临时文件扫描**:在 %TEMP%/%LOCALAPPDATA%\Temp 下找散落的 `*.tmp`/`*.log`/`*.bak`/`*.old`,>7 天或 >50MB 才清(可释放大量散落空间)
-- **高级**(默认不勾 + 折叠,9 项):INF/Setup 日志、BITS 日志、WinSxS ManifestCache、Defender 隔离区、`$WINDOWS.~BT`、`$SysReset`、`Windows.old`、**关闭休眠(释放 hiberfil.sys,可达 4-16 GB)**、**清理旧卷影副本(可释放数 GB)**
+- 🧹 **垃圾清理** — 75 项分档管理，支持全选 / 反选 / 仅安全，实时显示可清理空间
+- 📦 **大文件扫描** — 按目录扫描 Top N 大文件，支持扩展名、时间范围、排除目录过滤
+- 📂 **文件夹大小** — 递归统计子目录体积，按大小排序，深度可调
+- 🔁 **重复文件查找** — 基于 MD5 哈希比对，按组展示，勾选后批量删除
 
-### 4 个 Tab
+## 技术优势
 
-- 🧹 **垃圾清理**(74 项)
-- 📦 **大文件**(Top N 扫描 + 扩展名/时间/排除目录过滤)
-- 📂 **文件夹大小**(深度可调)
-- 🔁 **重复文件**(MD5 哈希 + 扩展名分组 + 勾选删除)
+| 特性 | 实现 |
+|---|---|
+| ⚡ 工作窃取式并行扫描 | N 个 worker 共享任务队列，自动负载均衡，非均衡目录树（如 node_modules）提速 2-5 倍 |
+| 🗑 批量回收站 API | 多文件合并为一次系统调用，删除速度提升 10 倍以上，全部进回收站可恢复 |
+| 📂 单遍目录扫描 | 一次遍历同时收集文件与子目录，相比两遍扫描提速约 2 倍 |
+| 🛡 命令注入防御 | 所有系统命令经过白名单校验与字符净化，防止路径注入 |
+| 💾 系统还原点 | 清理前可创建还原点，高级操作前强制创建，出错可回滚 |
+| 🚫 文件白名单 | 支持按扩展名和路径前缀配置，保护重要文件不被误删 |
 
-### 性能改进(v3.2 - 全场景提速)
+## 交互体验
 
-| 场景 | 改进 | 提速 |
-|---|---|---|
-| 并行扫描非均衡树(`node_modules` 等 90% 文件集中在一个子目录) | 旧:每子目录 1 个线程,8 线程 7 个空转<br>新:**工作窃取式** `Queue + N worker`,自动负载均衡 | **2-5x** |
-| 删除大目录(>5000 文件) | 旧:Python 循环 unlink + rmdir<br>新:**`shutil.rmtree(ignore_errors=True)`** C 实现 | **2-3x** |
-| `safe_remove_dir` 扫描 | 旧:`scandir_files_parallel` + `os.walk` 两次全遍历<br>新:**单遍**同时收集文件 + 子目录 | **~2x** |
-| `safe_remove_file` 失败时 | 旧:`os.chmod(0o777)` 回退(NTFS 上无效)<br>新:直接放弃,省一次 syscall | 微小但每文件累计 |
-| 重复 Tab 批量删除 N 个文件 | 旧:N 次 `SHFileOperationW` syscall<br>新:**批量 API 一次 syscall** | **10x+** |
-| `scandir_files` 单线程 | 旧:`entries = list(it)` 物化迭代器<br>新:直接迭代 | 微小但大量目录累计 |
+- 实时显示 **C 盘使用率** 与 **可清理空间**
+- 异步扫描与清理，UI 全程不卡顿，支持中途取消
+- 清理前可勾选 **创建系统还原点** 和 **同时清空回收站**
+- 深色 / 浅色主题切换
+- 微信风格绿色主题，列表支持鼠标滚轮
+- 跳过被占用文件，失败不崩溃，日志区记录所有操作
 
-### 其他特性
+## 使用建议
 
-- 实时显示 **C 盘使用率**
-- 清理前可勾选 **"创建系统还原点"**(强烈建议)
-- 可选 **"同时清空回收站"**
-- 异步扫描 + 清理,UI 不卡
-- 跳过被占用的文件,失败不崩
-- 深色/浅色主题切换
-- 微信风绿主题,支持鼠标滚轮
-- 用户可配置 **白名单**(扩展名 + 路径前缀)
+- 首次使用建议先勾选「安全」档跑一次，再按需选择「谨慎」档
+- 清理浏览器缓存前请先关闭对应浏览器，否则部分文件被占用
+- 高级项（Windows.old、卷影副本、关闭休眠等）删除后无法恢复，请仔细阅读说明
+- 清理后建议重启一次，部分系统缓存需重启才彻底释放
 
-## 注意事项
+## 重新打包（开发者）
 
-- 必须以管理员权限运行(脚本/打包已自动处理)
-- 浏览器缓存请先关闭对应浏览器再清理(否则部分文件被占用)
-- 不要同时打开两个清理实例
-- 清理后建议重启一次,某些缓存要重启才彻底释放
-- 高级项(尤其 `Windows.old`、Defender 隔离区、卷影副本清理)删了无法恢复,看清说明再勾
-- **关闭休眠**会丧失真正的休眠能力(但「快速启动」不受影响,Win11 默认走快速启动)
-- **野生临时文件扫描**会清掉 *.log,某些程序依赖旧日志,如不确定可先不勾
+双击 `打包.bat`，自动完成：
 
-## 常见问题
+1. 检查 Python 与 PyInstaller（缺失则自动安装）
+2. 复制源码到临时英文路径（规避 PyInstaller 中文路径问题）
+3. 执行 PyInstaller 打包
+4. 将 `C_Cleaner.exe` 复制回 `dist\` 目录
 
-**Q: 双击 exe 什么都没弹出来?**
-A: 看任务管理器是否有 `C_Cleaner.exe` 进程。如果有,说明 GUI 启动了,只是被其他窗口挡住了。如果连进程都没有,右键 exe → "以管理员身份运行"。
+## 开发运行
 
-**Q: 打包失败?**
-A: 打包.bat 会自动规避中文路径,如果还失败,看 cmd 窗口里 `build.log` 的最后 30 行,常见原因是:
-- 没装 Python
-- 网络问题导致 pip install pyinstaller 失败
-- 杀毒软件干扰(临时关掉再试)
-
-**Q: 怎么加新的清理项?**
-A: 编辑 `cleaner.py` 顶部的 `CLEAN_TARGETS` 列表,加一项。普通文件清理用 `kind: "files"`(默认),按模式扫描用 `kind: "wild_temp"`,系统级操作用 `kind: "command"`。
-
-**Q: 74 项一次清理大概能释放多少?**
-A: 看使用情况。一般用户首次 8-25 GB,开发者/IDE 重度用户 30-80 GB,旧系统 50+ GB。建议先勾「安全」跑一次,再勾「谨慎」,高级项按需选。
-
-**Q: 工作窃取式扫描有什么意义?**
-A: 旧版给「每个一级子目录」分配一个线程。如果 90% 文件集中在 1 个子目录,8 个线程只有 1 个干活。新版 N 个 worker 共享任务队列,自动把活儿均分,大数据集快 2-5x。
-
-**Q: 批量回收站 API 安全吗?**
-A: 安全。Windows 的 `SHFileOperationW` 原生支持多路径操作,只是把多个删除请求合并成一次系统调用。所有路径都进回收站,不会绕过回收站直接删除。
+双击 `运行.bat`，以管理员权限启动 `python cleaner.py`，需 Python 3.8+。
 
 ## 项目结构
 
 ```
 C盘清理工具/
-├── cleaner.py           # 主程序(扫描 + 清理 + GUI,~4150 行)
-├── 运行.bat              # 一键启动(用 Python 跑)
-├── 打包.bat              # 一键打包成 exe
-├── tests/
-│   └── test_all.py      # 单元测试(25 个,覆盖 3 档 + 并发 + 智能扫描 + 批量 API)
-├── README.md
+├── cleaner.py           # 主程序（扫描 + 清理 + GUI）
+├── cleaner.spec         # PyInstaller 打包配置
+├── 运行.bat              # 一键启动（Python 开发模式）
+├── 打包.bat / build.bat  # 一键打包成 exe
+├── app.ico              # 应用图标
+├── tests/               # 单元测试
 └── dist/
-    └── C_Cleaner.exe    # 打包好的单文件 exe (12 MB)
+    └── C_Cleaner.exe    # 打包好的单文件 exe
 ```
 
-## 跑测试
+## 常见问题
 
-```powershell
-python tests\test_all.py
-```
+**Q：双击 exe 没反应？**
+A：查看任务管理器是否有 `C_Cleaner.exe` 进程。如有，说明 GUI 已启动，可能被其他窗口遮挡；如无，右键 exe →「以管理员身份运行」。
+
+**Q：Windows 提示「已保护你的电脑」？**
+A：这是 SmartScreen 对未签名 exe 的正常提示，点「更多信息」→「仍要运行」即可。
+
+**Q：杀毒软件报毒？**
+A：PyInstaller 单文件打包的 exe 偶有误报，属正常现象，添加信任即可。
+
+**Q：一次能清理多少空间？**
+A：视使用情况而定。普通用户首次通常 8-25 GB，开发者 / 重度用户可达 30-80 GB，老旧系统可能 50 GB 以上。
+
+**Q：如何添加新的清理项？**
+A：编辑 `cleaner.py` 中的 `_CLEAN_TARGET_SPECS` 列表，按现有格式添加一项即可。普通文件清理用 `"kind": "files"`，模式匹配用 `"kind": "wild_temp"`，系统命令用 `"kind": "command"`。
