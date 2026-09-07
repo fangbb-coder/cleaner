@@ -3115,10 +3115,19 @@ class CleanerTab:
         self._build()
 
     def _build(self):
-        """顶层调度:把 UI 拆为三个子区域,各自由专门方法构建。"""
+        """顶层调度:把 UI 拆为三个子区域,各自由专门方法构建。
+
+        task-fix-action-bar-hidden: pack 顺序至关重要。
+        原 序:disk_card(TOP) -> list_card(TOP, expand=True) -> action_card(TOP)
+        问题:list_card 先 pack 且 expand=True,会抢占全部剩余空间,
+              导致后 pack 的 action_card 无空间渲染,扫描/清理按钮不可见。
+        正确序:disk_card(TOP) -> action_card(BOTTOM) -> list_card(TOP, expand=True)
+              顶部和底部固定区域先布局,list_card 再 expand 抢剩余中间空间,
+              这是 tkinter pack 的经典模式。
+        """
         self._build_disk_card()
-        self._build_targets_tree()
         self._build_action_bar()
+        self._build_targets_tree()
         # 初始
         self._refresh_disk()
         self._refresh_list()
@@ -3211,9 +3220,13 @@ class CleanerTab:
         canvas.bind_all("<MouseWheel>", _on_mousewheel)
 
     def _build_action_bar(self):
-        """底部:操作区(扫描/刷新/白名单 + 选项 + 取消/清理)。"""
+        """底部:操作区(扫描/刷新/白名单 + 选项 + 取消/清理)。
+
+        task-fix-action-bar-hidden: 用 side=BOTTOM 从底部布局,
+        确保不被 list_card(expand=True) 抢占空间。pack 顺序见 _build() 注释。
+        """
         action_card = Card(self.parent, padding=14)
-        action_card.pack(fill=tk.X, padx=12, pady=(0, 12))
+        action_card.pack(side=tk.BOTTOM, fill=tk.X, padx=12, pady=(0, 12))
 
         act_top = tk.Frame(action_card.pad_frame, bg=WC.CARD)
         act_top.pack(fill=tk.X)
