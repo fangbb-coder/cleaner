@@ -40,7 +40,7 @@ if exist dist rmdir /s /q dist
 if exist C_Cleaner.spec del /q C_Cleaner.spec 2>nul
 
 echo Building C_Cleaner.exe (1-3 min) ...
-%PY% -m PyInstaller --onefile --noconsole --uac-admin --name C_Cleaner --clean --noconfirm cleaner.py >"%TMPBUILD%\build.log" 2>&1
+%PY% -m PyInstaller --onefile --noconsole --uac-admin --name C_Cleaner --icon "%~dp0app.ico" --clean --noconfirm cleaner.py >"%TMPBUILD%\build.log" 2>&1
 if errorlevel 1 goto fail
 if not exist "%TMPBUILD%\dist\C_Cleaner.exe" goto fail
 

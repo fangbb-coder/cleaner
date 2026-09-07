@@ -1,0 +1,47 @@
+# =============================================================================
+# D:\程序\C盘清理工具\.gitignore
+# -----------------------------------------------------------------------------
+# 设计要点:
+#   1. 屏蔽 Python 运行时缓存 (__pycache__/, *.pyc)
+#   2. 屏蔽发布产物 (dist/*.exe) 但保留 .gitkeep 占位
+#   3. 保留 _archive/cleaner_v2.0.6.py 历史源码不被忽略
+#      (历史源码有价值,白名单方式只忽略 _archive 下的 .exe)
+#   4. 屏蔽开发期临时文件 (.zcode/, .team/, .vscode/, .idea/, *.log)
+#   5. 屏蔽本轮重构产生的实施日志 (.team-implementation-log.md)
+# =============================================================================
+
+# ---- Python 运行时缓存 ----
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# ---- 发布产物 (保留 dist 目录本身与 .gitkeep 占位) ----
+dist/*.exe
+dist/*.exe.*
+dist/*.spec
+dist/*.prev
+dist/*.prev*
+dist/*.old
+dist/build/
+!dist/.gitkeep
+
+# ---- PyInstaller 构建中间产物 (项目根 build/) ----
+build/
+
+# ---- 历史归档: 只忽略 _archive 下的可执行文件,保留源码 ----
+_archive/*.exe
+
+# ---- 开发期临时文件 ----
+.zcode/
+.team/
+.vscode/
+.idea/
+
+# ---- 日志文件 ----
+*.log
+logs/
+
+# ---- 本轮团队协作产物 ----
+.team-implementation-log.md
